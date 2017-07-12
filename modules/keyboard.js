@@ -233,33 +233,33 @@ Keyboard.DEFAULTS = {
         this.quill.focus();
       }
     },
-    'list autofill': {
-      key: ' ',
-      collapsed: true,
-      format: { list: false },
-      prefix: /^\s*?(1\.|-|\[ ?\]|\[x\])$/,
-      handler: function(range, context) {
-        if (this.quill.scroll.whitelist != null && !this.quill.scroll.whitelist['list']) return true;
-        let length = context.prefix.length;
-        let value;
-        switch (context.prefix.trim()) {
-          case '[]': case '[ ]':
-            value = 'unchecked';
-            break;
-          case '[x]':
-            value = 'checked';
-            break;
-          case '-':
-            value = 'bullet';
-            break;
-          default:
-            value = 'ordered';
-        }
-        this.quill.scroll.deleteAt(range.index - length, length);
-        this.quill.formatLine(range.index - length, 1, 'list', value, Quill.sources.USER);
-        this.quill.setSelection(range.index - length, Quill.sources.SILENT);
-      }
-    },
+    // 'list autofill': {
+    //   key: ' ',
+    //   collapsed: true,
+    //   format: { list: false },
+    //   prefix: /^\s*?(1\.|-|\[ ?\]|\[x\])$/,
+    //   handler: function(range, context) {
+    //     if (this.quill.scroll.whitelist != null && !this.quill.scroll.whitelist['list']) return true;
+    //     let length = context.prefix.length;
+    //     let value;
+    //     switch (context.prefix.trim()) {
+    //       case '[]': case '[ ]':
+    //         value = 'unchecked';
+    //         break;
+    //       case '[x]':
+    //         value = 'checked';
+    //         break;
+    //       case '-':
+    //         value = 'bullet';
+    //         break;
+    //       default:
+    //         value = 'ordered';
+    //     }
+    //     this.quill.scroll.deleteAt(range.index - length, length);
+    //     this.quill.formatLine(range.index - length, 1, 'list', value, Quill.sources.USER);
+    //     this.quill.setSelection(range.index - length, Quill.sources.SILENT);
+    //   }
+    // },
     'code exit': {
       key: Keyboard.keys.ENTER,
       collapsed: true,
