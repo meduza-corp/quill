@@ -37,6 +37,7 @@ import Tooltip from './ui/tooltip';
 
 import BubbleTheme from './themes/bubble';
 import SnowTheme from './themes/snow';
+import MonitorTheme from './themes/monitor';
 
 
 Quill.register({
@@ -92,6 +93,7 @@ Quill.register({
 
   'themes/bubble': BubbleTheme,
   'themes/snow': SnowTheme,
+  'themes/monitor': MonitorTheme,
 
   'ui/icons': Icons,
   'ui/picker': Picker,
