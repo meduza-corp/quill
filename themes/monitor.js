@@ -36,6 +36,18 @@ MonitorTheme.DEFAULTS = extend(true, {}, BaseTheme.DEFAULTS, {
           this.quill.theme.tooltip.edit('link', format.link);
         }
       }
+    },
+    keyboard: {
+      bindings: {
+        custom: {
+          key: 'L',
+          shiftKey: true,
+          metaKey: true,
+          handler: function() {
+            this.quill.theme.modules.toolbar.handlers.link.apply(this);
+          }
+        }
+      }
     }
   }
 });

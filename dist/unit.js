@@ -11023,6 +11023,18 @@ MonitorTheme.DEFAULTS = (0, _extend2.default)(true, {}, _base2.default.DEFAULTS,
           this.quill.theme.tooltip.edit('link', format.link);
         }
       }
+    },
+    keyboard: {
+      bindings: {
+        custom: {
+          key: 'L',
+          shiftKey: true,
+          metaKey: true,
+          handler: function handler() {
+            this.quill.theme.modules.toolbar.handlers.link.apply(this);
+          }
+        }
+      }
     }
   }
 });
