@@ -7,6 +7,7 @@ import Module from '../core/module';
 
 import { AlignAttribute, AlignStyle } from '../formats/align';
 import { BackgroundStyle } from '../formats/background';
+import CodeBlock from '../formats/code';
 import { ColorStyle } from '../formats/color';
 import { DirectionAttribute, DirectionStyle } from '../formats/direction';
 import { FontStyle } from '../formats/font';
@@ -61,8 +62,9 @@ class Clipboard extends Module {
     this.container.setAttribute('contenteditable', true);
     this.container.setAttribute('tabindex', -1);
     this.matchers = [];
-    CLIPBOARD_CONFIG.concat(this.options.matchers).forEach((pair) => {
-      this.addMatcher(...pair);
+    CLIPBOARD_CONFIG.concat(this.options.matchers).forEach(([selector, matcher]) => {
+      if (!options.matchVisual && matcher === matchSpacing) return;
+      this.addMatcher(selector, matcher);
     });
   }
 
@@ -73,6 +75,13 @@ class Clipboard extends Module {
   convert(html) {
     if (typeof html === 'string') {
       this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // Remove spaces between tags
+      return this.convert();
+    }
+    const formats = this.quill.getFormat(this.quill.selection.savedRange.index);
+    if (formats[CodeBlock.blotName]) {
+      const text = this.container.innerText;
+      this.container.innerHTML = '';
+      return new Delta().insert(text, { [CodeBlock.blotName]: formats[CodeBlock.blotName] });
     }
     let [elementMatchers, textMatchers] = this.prepareMatching();
     let delta = traverse(this.container, elementMatchers, textMatchers);
@@ -100,8 +109,8 @@ class Clipboard extends Module {
     let delta = new Delta().retain(range.index);
     let scrollTop = this.quill.scrollingContainer.scrollTop;
     this.container.focus();
+    this.quill.selection.update(Quill.sources.SILENT);
     setTimeout(() => {
-      this.quill.selection.update(Quill.sources.SILENT);
       delta = delta.concat(this.convert()).delete(range.length);
       this.quill.updateContents(delta, Quill.sources.USER);
       // range.length contributes to delta.length()
@@ -135,7 +144,8 @@ class Clipboard extends Module {
   }
 }
 Clipboard.DEFAULTS = {
-  matchers: []
+  matchers: [],
+  matchVisual: true
 };
 
 
