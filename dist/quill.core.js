@@ -8099,7 +8099,7 @@ var Clipboard = function (_Module) {
       var range = this.quill.getSelection();
       var delta = new _quillDelta2.default().retain(range.index);
       var scrollTop = this.quill.scrollingContainer.scrollTop;
-      this.container.focus();
+      // this.container.focus();
       this.quill.selection.update(_quill2.default.sources.SILENT);
       setTimeout(function () {
         delta = delta.concat(_this2.convert()).delete(range.length);
