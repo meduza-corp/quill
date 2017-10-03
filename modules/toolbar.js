@@ -85,7 +85,7 @@ class Toolbar extends Module {
         }
         e.preventDefault();
       }
-      this.quill.focus();
+      // this.quill.focus();
       let [range, ] = this.quill.selection.getRange();
       if (this.handlers[format] != null) {
         this.handlers[format].call(this, value);

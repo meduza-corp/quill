@@ -9201,7 +9201,7 @@ var Toolbar = function (_Module) {
           }
           e.preventDefault();
         }
-        _this2.quill.focus();
+        // this.quill.focus();
 
         var _quill$selection$getR = _this2.quill.selection.getRange(),
             _quill$selection$getR2 = _slicedToArray(_quill$selection$getR, 1),
