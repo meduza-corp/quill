@@ -35,7 +35,7 @@ arrowWidth = 6px
       font-size: 13px
       height: 100%
       outline: none
-      padding: 10px 20px
+      padding: 10px 40px 10px 20px
       position: absolute
       width: 100%
     a
@@ -47,3 +47,11 @@ arrowWidth = 6px
       top: 10px
       position: absolute
       right: 20px
+
+      &.ql-shorten
+        right: 40px
+        z-index 1000
+        top 11px
+        &:before
+          content: '\2702'
+

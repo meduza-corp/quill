@@ -3,6 +3,7 @@ import Emitter from '../core/emitter';
 import BaseTheme, { BaseTooltip } from './base';
 import { Range } from '../core/selection';
 import icons from '../ui/icons';
+import axios from 'axios';
 
 
 const TOOLBAR_CONFIG = [
@@ -85,6 +86,24 @@ class MonitorTooltip extends BaseTooltip {
     this.root.querySelector('.ql-close').addEventListener('click', () => {
       this.root.classList.remove('ql-editing');
     });
+    this.root.querySelector('.ql-shorten').addEventListener('click', () => {
+      const input = this.root.querySelector('.ql-tooltip-editor input');
+      const shortenButton = this.root.querySelector('.ql-tooltip-editor .ql-shorten');
+
+      if (!shortenButton.classList.contains('loading')) {
+        shortenButton.classList.add('loading');
+        axios
+          .get(this.quill.options.modules.toolbar.shortenUrl, { params: { url: input.value } })
+          .then((response) => {
+            shortenButton.classList.remove('loading');
+            input.value = response.data;
+          })
+          .catch((err) => {
+            console.log(err);
+            shortenButton.classList.remove('loading');
+          });
+      }
+    });
     this.quill.on(Emitter.events.SCROLL_OPTIMIZE, () => {
       // Let selection be restored by toolbar handlers before repositioning
       setTimeout(() => {
@@ -113,6 +132,7 @@ MonitorTooltip.TEMPLATE = [
   '<span class="ql-tooltip-arrow"></span>',
   '<div class="ql-tooltip-editor">',
     '<input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL">',
+    '<a class="ql-shorten"></a>',
     '<a class="ql-close"></a>',
   '</div>'
 ].join('');

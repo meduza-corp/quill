@@ -892,7 +892,7 @@
   font-size: 13px;
   height: 100%;
   outline: none;
-  padding: 10px 20px;
+  padding: 10px 40px 10px 20px;
   position: absolute;
   width: 100%;
 }
@@ -906,6 +906,14 @@
   content: "\D7";
   font-size: 16px;
   font-weight: bold;
+}
+.ql-bubble .ql-tooltip-editor a.ql-shorten {
+  right: 40px;
+  z-index: 1000;
+  top: 11px;
+}
+.ql-bubble .ql-tooltip-editor a.ql-shorten:before {
+  content: '\2702';
 }
 .ql-container.ql-bubble:not(.ql-disabled) a {
   position: relative;
