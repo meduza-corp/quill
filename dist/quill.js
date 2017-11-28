@@ -12826,6 +12826,7 @@ var MonitorTooltip = function (_BaseTooltip) {
           _axios2.default.get(_this3.quill.options.modules.toolbar.shortenUrl, { params: { url: input.value } }).then(function (response) {
             shortenButton.classList.remove('loading');
             input.value = response.data.url;
+            input.focus();
           }).catch(function (err) {
             console.log(err);
             shortenButton.classList.remove('loading');

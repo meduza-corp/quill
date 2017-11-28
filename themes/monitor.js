@@ -97,6 +97,7 @@ class MonitorTooltip extends BaseTooltip {
           .then((response) => {
             shortenButton.classList.remove('loading');
             input.value = response.data.url;
+            input.focus();
           })
           .catch((err) => {
             console.log(err);
