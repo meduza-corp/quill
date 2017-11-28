@@ -96,7 +96,7 @@ class MonitorTooltip extends BaseTooltip {
           .get(this.quill.options.modules.toolbar.shortenUrl, { params: { url: input.value } })
           .then((response) => {
             shortenButton.classList.remove('loading');
-            input.value = response.data;
+            input.value = response.data.url;
           })
           .catch((err) => {
             console.log(err);
