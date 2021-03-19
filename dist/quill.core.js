@@ -143,7 +143,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ParchmentError = (function (_super) {
+var ParchmentError = /** @class */ (function (_super) {
     __extends(ParchmentError, _super);
     function ParchmentError(message) {
         var _this = this;
@@ -607,6 +607,8 @@ module.exports = Delta;
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
+var defineProperty = Object.defineProperty;
+var gOPD = Object.getOwnPropertyDescriptor;
 
 var isArray = function isArray(arr) {
 	if (typeof Array.isArray === 'function') {
@@ -636,6 +638,35 @@ var isPlainObject = function isPlainObject(obj) {
 	return typeof key === 'undefined' || hasOwn.call(obj, key);
 };
 
+// If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
+var setProperty = function setProperty(target, options) {
+	if (defineProperty && options.name === '__proto__') {
+		defineProperty(target, options.name, {
+			enumerable: true,
+			configurable: true,
+			value: options.newValue,
+			writable: true
+		});
+	} else {
+		target[options.name] = options.newValue;
+	}
+};
+
+// Return undefined instead of __proto__ if '__proto__' is not an own property
+var getProperty = function getProperty(obj, name) {
+	if (name === '__proto__') {
+		if (!hasOwn.call(obj, name)) {
+			return void 0;
+		} else if (gOPD) {
+			// In early versions of node, obj['__proto__'] is buggy when obj has
+			// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
+			return gOPD(obj, name).value;
+		}
+	}
+
+	return obj[name];
+};
+
 module.exports = function extend() {
 	var options, name, src, copy, copyIsArray, clone;
 	var target = arguments[0];
@@ -660,8 +691,8 @@ module.exports = function extend() {
 		if (options != null) {
 			// Extend the base object
 			for (name in options) {
-				src = target[name];
-				copy = options[name];
+				src = getProperty(target, name);
+				copy = getProperty(options, name);
 
 				// Prevent never-ending loop
 				if (target !== copy) {
@@ -675,11 +706,11 @@ module.exports = function extend() {
 						}
 
 						// Never move original objects, clone them
-						target[name] = extend(deep, clone, copy);
+						setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
 
 					// Don't bring in undefined values
 					} else if (typeof copy !== 'undefined') {
-						target[name] = copy;
+						setProperty(target, { name: name, newValue: copy });
 					}
 				}
 			}
@@ -2706,7 +2737,7 @@ exports.default = Selection;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Registry = __webpack_require__(1);
-var Attributor = (function () {
+var Attributor = /** @class */ (function () {
     function Attributor(attrName, keyName, options) {
         if (options === void 0) { options = {}; }
         this.attrName = attrName;
@@ -3733,7 +3764,13 @@ function clone(parent, circular, depth, prototype, includeNonEnumerable) {
     } else if (clone.__isDate(parent)) {
       child = new Date(parent.getTime());
     } else if (useBuffer && Buffer.isBuffer(parent)) {
-      child = new Buffer(parent.length);
+      if (Buffer.allocUnsafe) {
+        // Node.js >= 4.5.0
+        child = Buffer.allocUnsafe(parent.length);
+      } else {
+        // Older Node.js versions
+        child = new Buffer(parent.length);
+      }
       parent.copy(child);
       return child;
     } else if (_instanceof(parent, Error)) {
@@ -4045,7 +4082,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var linked_list_1 = __webpack_require__(69);
 var shadow_1 = __webpack_require__(38);
 var Registry = __webpack_require__(1);
-var ContainerBlot = (function (_super) {
+var ContainerBlot = /** @class */ (function (_super) {
     __extends(ContainerBlot, _super);
     function ContainerBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -4291,7 +4328,7 @@ var attributor_1 = __webpack_require__(15);
 var store_1 = __webpack_require__(36);
 var container_1 = __webpack_require__(22);
 var Registry = __webpack_require__(1);
-var FormatBlot = (function (_super) {
+var FormatBlot = /** @class */ (function (_super) {
     __extends(FormatBlot, _super);
     function FormatBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -4373,7 +4410,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var shadow_1 = __webpack_require__(38);
 var Registry = __webpack_require__(1);
-var LeafBlot = (function (_super) {
+var LeafBlot = /** @class */ (function (_super) {
     __extends(LeafBlot, _super);
     function LeafBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -4395,8 +4432,8 @@ var LeafBlot = (function (_super) {
         return [this.parent.domNode, offset];
     };
     LeafBlot.prototype.value = function () {
-        return _a = {}, _a[this.statics.blotName] = this.statics.value(this.domNode) || true, _a;
         var _a;
+        return _a = {}, _a[this.statics.blotName] = this.statics.value(this.domNode) || true, _a;
     };
     LeafBlot.scope = Registry.Scope.INLINE_BLOT;
     return LeafBlot;
@@ -5392,7 +5429,7 @@ function match(node, prefix) {
         return name.indexOf(prefix + "-") === 0;
     });
 }
-var ClassAttributor = (function (_super) {
+var ClassAttributor = /** @class */ (function (_super) {
     __extends(ClassAttributor, _super);
     function ClassAttributor() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5439,7 +5476,7 @@ var attributor_1 = __webpack_require__(15);
 var class_1 = __webpack_require__(35);
 var style_1 = __webpack_require__(37);
 var Registry = __webpack_require__(1);
-var AttributorStore = (function () {
+var AttributorStore = /** @class */ (function () {
     function AttributorStore(domNode) {
         this.attributes = {};
         this.domNode = domNode;
@@ -5526,7 +5563,7 @@ function camelize(name) {
     }).join('');
     return parts[0] + rest;
 }
-var StyleAttributor = (function (_super) {
+var StyleAttributor = /** @class */ (function (_super) {
     __extends(StyleAttributor, _super);
     function StyleAttributor() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5566,7 +5603,7 @@ exports.default = StyleAttributor;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Registry = __webpack_require__(1);
-var ShadowBlot = (function () {
+var ShadowBlot = /** @class */ (function () {
     function ShadowBlot(domNode) {
         this.domNode = domNode;
         this.attach();
@@ -7628,7 +7665,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var format_1 = __webpack_require__(23);
 var Registry = __webpack_require__(1);
-var BlockBlot = (function (_super) {
+var BlockBlot = /** @class */ (function (_super) {
     __extends(BlockBlot, _super);
     function BlockBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -7703,7 +7740,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var leaf_1 = __webpack_require__(24);
-var EmbedBlot = (function (_super) {
+var EmbedBlot = /** @class */ (function (_super) {
     __extends(EmbedBlot, _super);
     function EmbedBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -7762,7 +7799,7 @@ function isEqual(obj1, obj2) {
     }
     return true;
 }
-var InlineBlot = (function (_super) {
+var InlineBlot = /** @class */ (function (_super) {
     __extends(InlineBlot, _super);
     function InlineBlot() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -7843,7 +7880,7 @@ var OBSERVER_CONFIG = {
     subtree: true
 };
 var MAX_OPTIMIZE_ITERATIONS = 100;
-var ScrollBlot = (function (_super) {
+var ScrollBlot = /** @class */ (function (_super) {
     __extends(ScrollBlot, _super);
     function ScrollBlot(node) {
         var _this = _super.call(this, node) || this;
@@ -8000,7 +8037,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var leaf_1 = __webpack_require__(24);
 var Registry = __webpack_require__(1);
-var TextBlot = (function (_super) {
+var TextBlot = /** @class */ (function (_super) {
     __extends(TextBlot, _super);
     function TextBlot(node) {
         var _this = _super.call(this, node) || this;
@@ -8090,7 +8127,7 @@ exports.default = TextBlot;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var LinkedList = (function () {
+var LinkedList = /** @class */ (function () {
     function LinkedList() {
         this.head = this.tail = undefined;
         this.length = 0;

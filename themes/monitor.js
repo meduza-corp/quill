@@ -35,6 +35,11 @@ MonitorTheme.DEFAULTS = extend(true, {}, BaseTheme.DEFAULTS, {
           let range = this.quill.getSelection();
           const format = this.quill.getFormat(range);
           this.quill.theme.tooltip.edit('link', format.link);
+        },
+        spotlight: function() {
+          let range = this.quill.getSelection();
+          const format = this.quill.getFormat(range);
+          this.quill.theme.tooltip.edit('spotlight', format.spotlight);
         }
       }
     },
@@ -99,10 +104,9 @@ class MonitorTooltip extends BaseTooltip {
             input.value = response.data.url;
             input.focus();
           })
-          .catch((err) => {
-            console.log(err);
-            shortenButton.classList.remove('loading');
-          });
+          // .catch((_err) => {
+          //   shortenButton.classList.remove('loading');
+          // });
       }
     });
     this.quill.on(Emitter.events.SCROLL_OPTIMIZE, () => {
@@ -115,6 +119,41 @@ class MonitorTooltip extends BaseTooltip {
         }
       }, 1);
     });
+  }
+
+  edit(mode = 'link', preview = null) {
+    this.root.classList.remove('ql-hidden');
+    this.root.classList.add('ql-editing');
+
+    if (mode === 'link') {
+      if (preview != null) {
+        this.textbox.value = preview;
+      } else if (mode !== this.root.getAttribute('data-mode')) {
+        this.textbox.value = '';
+      }
+    }
+
+    if (mode === 'spotlight') {
+      if (preview != null) {
+        this.textbox.value = preview.comment;
+      } else if (mode !== this.root.getAttribute('data-mode')) {
+        this.textbox.value = '';
+      }
+    }
+
+    this.position(this.quill.getBounds(this.quill.selection.savedRange));
+    this.textbox.select();
+
+    if (mode === 'link') {
+      this.textbox.setAttribute('placeholder', 'https://meduza.io/...');
+    }
+
+    if (mode === 'spotlight') {
+      console.log(this) // eslint-disable-line no-console
+      this.textbox.setAttribute('placeholder', 'Оставить комментарий...');
+    }
+
+    this.root.setAttribute('data-mode', mode);
   }
 
   cancel() {

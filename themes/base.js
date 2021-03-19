@@ -211,6 +211,18 @@ class BaseTooltip extends Tooltip {
         this.quill.root.scrollTop = scrollTop;
         break;
       }
+      case 'spotlight': {
+        let scrollTop = this.quill.root.scrollTop;
+        if (this.linkRange) {
+          this.quill.formatText(this.linkRange, 'spotlight', value, Emitter.sources.USER);
+          delete this.linkRange;
+        } else {
+          this.restoreFocus();
+          this.quill.format('spotlight', value, Emitter.sources.USER);
+        }
+        this.quill.root.scrollTop = scrollTop;
+        break;
+      }
       case 'video': {
         value = extractVideoUrl(value);
       } // eslint-disable-next-line no-fallthrough
