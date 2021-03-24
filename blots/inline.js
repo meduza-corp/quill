@@ -44,7 +44,7 @@ Inline.allowedChildren = [Inline, Embed, Text];
 Inline.order = [
   'cursor', 'inline',   // Must be lower
   'code', 'underline', 'strike', 'italic', 'bold', 'script',
-  'link'                // Must be higher
+  'link', 'spotlight'                // Must be higher
 ];
 
 

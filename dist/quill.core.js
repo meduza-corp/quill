@@ -2011,7 +2011,7 @@ var Inline = function (_Parchment$Inline) {
 Inline.allowedChildren = [Inline, _embed2.default, _text2.default];
 // Lower index means deeper in the DOM tree, since not found (-1) is for embeds
 Inline.order = ['cursor', 'inline', // Must be lower
-'code', 'underline', 'strike', 'italic', 'bold', 'script', 'link' // Must be higher
+'code', 'underline', 'strike', 'italic', 'bold', 'script', 'link', 'spotlight' // Must be higher
 ];
 
 exports.default = Inline;
@@ -5316,7 +5316,7 @@ function handleEnter(range, context) {
   Object.keys(context.format).forEach(function (name) {
     if (lineFormats[name] != null) return;
     if (Array.isArray(context.format[name])) return;
-    if (name === 'link') return;
+    if (name === 'link' || name === 'spotlight' || name === 'marker') return;
     _this3.quill.format(name, context.format[name], _quill2.default.sources.USER);
   });
 }

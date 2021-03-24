@@ -2320,7 +2320,7 @@ var Inline = function (_Parchment$Inline) {
 Inline.allowedChildren = [Inline, _embed2.default, _text2.default];
 // Lower index means deeper in the DOM tree, since not found (-1) is for embeds
 Inline.order = ['cursor', 'inline', // Must be lower
-'code', 'underline', 'strike', 'italic', 'bold', 'script', 'link' // Must be higher
+'code', 'underline', 'strike', 'italic', 'bold', 'script', 'link', 'spotlight' // Must be higher
 ];
 
 exports.default = Inline;
@@ -5917,7 +5917,7 @@ function handleEnter(range, context) {
   Object.keys(context.format).forEach(function (name) {
     if (lineFormats[name] != null) return;
     if (Array.isArray(context.format[name])) return;
-    if (name === 'link') return;
+    if (name === 'link' || name === 'spotlight' || name === 'marker') return;
     _this3.quill.format(name, context.format[name], _quill2.default.sources.USER);
   });
 }
@@ -12906,7 +12906,12 @@ var MonitorTooltip = function (_BaseTooltip) {
       var preview = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       this.root.classList.remove('ql-hidden');
+
+      this.root.classList.remove('ql-edit-link');
+      this.root.classList.remove('ql-edit-spotlight');
+
       this.root.classList.add('ql-editing');
+      this.root.classList.add('ql-edit-' + mode);
 
       if (mode === 'link') {
         if (preview != null) {
@@ -12917,6 +12922,8 @@ var MonitorTooltip = function (_BaseTooltip) {
       }
 
       if (mode === 'spotlight') {
+        // this.root.getElementsByClassName('ql-shorten')[0].style.display = 'none';
+        // console.log(this.root) // eslint-disable-line no-console
         if (preview != null) {
           this.textbox.value = preview.comment;
         } else if (mode !== this.root.getAttribute('data-mode')) {
@@ -12932,7 +12939,6 @@ var MonitorTooltip = function (_BaseTooltip) {
       }
 
       if (mode === 'spotlight') {
-        console.log(this); // eslint-disable-line no-console
         this.textbox.setAttribute('placeholder', 'Оставить комментарий...');
       }
 

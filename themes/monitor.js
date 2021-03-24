@@ -123,7 +123,13 @@ class MonitorTooltip extends BaseTooltip {
 
   edit(mode = 'link', preview = null) {
     this.root.classList.remove('ql-hidden');
+
+    this.root.classList.remove('ql-edit-link');
+    this.root.classList.remove('ql-edit-spotlight');
+
     this.root.classList.add('ql-editing');
+    this.root.classList.add(`ql-edit-${mode}`);
+
 
     if (mode === 'link') {
       if (preview != null) {
@@ -134,6 +140,8 @@ class MonitorTooltip extends BaseTooltip {
     }
 
     if (mode === 'spotlight') {
+      // this.root.getElementsByClassName('ql-shorten')[0].style.display = 'none';
+      // console.log(this.root) // eslint-disable-line no-console
       if (preview != null) {
         this.textbox.value = preview.comment;
       } else if (mode !== this.root.getAttribute('data-mode')) {
@@ -149,7 +157,6 @@ class MonitorTooltip extends BaseTooltip {
     }
 
     if (mode === 'spotlight') {
-      console.log(this) // eslint-disable-line no-console
       this.textbox.setAttribute('placeholder', 'Оставить комментарий...');
     }
 
