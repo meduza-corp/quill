@@ -143,7 +143,8 @@ class MonitorTooltip extends BaseTooltip {
       // this.root.getElementsByClassName('ql-shorten')[0].style.display = 'none';
       // console.log(this.root) // eslint-disable-line no-console
       if (preview != null) {
-        this.textbox.value = preview.comment;
+        // this.textbox.value = preview.comment;
+        // this.textbox.value = 'Щдщдщддщщщ щщщщ щщщ';
       } else if (mode !== this.root.getAttribute('data-mode')) {
         this.textbox.value = '';
       }
